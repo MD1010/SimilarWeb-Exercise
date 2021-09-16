@@ -7,20 +7,22 @@ import { mockVideos } from "../../mock";
 
 export const PlaylistContainer = () => {
   const [playlist, setPlaylist] = useState<IVideo[]>([]);
-  const [playingVideoId, setVideoId] = useState<string>("");
+  // const [playingVideo, setCurrentVideo] = useState<IVideo | undefined>();
+  const [currentlyPlayingIndex, setCurrentlyPlayingIndex] = useState(0);
 
   const fetchPlaylist = () => {
     return mockVideos;
   };
 
-  const setCurrentlyPlayingVideo = (playingVideoIndex: number) => {
-    const videoId = playlist[playingVideoIndex].videoId;
-    setVideoId(videoId);
+  const playNextVideo = () => {
+    setCurrentlyPlayingIndex((currentlyPlaying) => currentlyPlaying + 1);
   };
 
-  useEffect(() => {
-    playlist.length && setCurrentlyPlayingVideo(0);
-  }, [playlist]);
+  // useEffect(() => {
+  //   if(playlist.length)
+  //   setCurrentVideo(playlist[0]);
+
+  // }, [playlist]);
 
   useEffect(() => {
     setPlaylist(fetchPlaylist());
@@ -29,7 +31,7 @@ export const PlaylistContainer = () => {
   return (
     <div className="playlist-container">
       <VideoList videos={playlist} />
-      <VideoPlayer playingVideoId={playingVideoId} />
+      <VideoPlayer playingVideoId={playlist[currentlyPlayingIndex]?.videoId} onVideoEnded={playNextVideo} />
     </div>
   );
 };

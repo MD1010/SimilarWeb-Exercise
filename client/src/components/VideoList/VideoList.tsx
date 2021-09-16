@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { IVideo } from "../../interfaces/Video";
 import { VideoListItem } from "./VideoListItem";
+import "./videoList.scss";
 
 interface VideoListProps {
   videos: IVideo[];
@@ -25,8 +26,8 @@ export const VideoList: React.FC<VideoListProps> = ({ videos }) => {
         <input type="submit"></input>
       </form>
 
-      {videos.map((video) => (
-        <VideoListItem video={video} />
+      {videos.map((videoItem) => (
+        <VideoListItem key={videoItem.videoId} video={videoItem} />
       ))}
     </div>
   );
