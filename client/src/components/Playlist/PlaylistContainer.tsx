@@ -1,45 +1,62 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { ADD_YOUTUBE_VIDEO, FETCH_PLAYLIST, REMOVE_VIDEO } from "../../api/playlist.api";
 import { VideoPlayer } from "../../common/VideoPlayer/VideoPlayer";
 import { IVideo } from "../../interfaces/Video";
-import "./playlist.scss";
+import { VIDEO_FETCH_COUNT } from "../../utils/consts";
+import { fetchAPI, RequestMethod } from "../../utils/fetchAPI";
 import { VideoList } from "../VideoList/VideoList";
-import { mockVideos } from "../../mock";
+import "./playlist.scss";
 
 export const PlaylistContainer = () => {
   const [playlist, setPlaylist] = useState<IVideo[]>([]);
   // const [playingVideo, setCurrentVideo] = useState<IVideo | undefined>();
-  const [currentlyPlayingIndex, setCurrentlyPlayingIndex] = useState(0);
+  // const [currentlyPlayingIndex.current, setCurrentlyPlayingIndex.current] = useState(0);
+  const currentlyPlayingIndex = useRef(0);
 
-  const fetchPlaylist = () => {
-    return mockVideos;
+  const fetchPlaylist = async () => {
+    const { res, error } = await fetchAPI(RequestMethod.GET, FETCH_PLAYLIST, null, {
+      limit: VIDEO_FETCH_COUNT,
+      cursor: playlist[playlist.length - 1]?._id,
+    });
+    if (error) {
+      return alert(error);
+    }
+    return res.entities;
   };
 
-  const playNextVideo = () => {
-    if (currentlyPlayingIndex < playlist.length - 1)
-      setCurrentlyPlayingIndex((currentlyPlaying) => currentlyPlaying + 1);
-  };
+  // const playNextVideo = () => {
+  //   if (currentlyPlayingIndex.current < playlist.length - 1)
+  //     setCurrentlyPlayingIndex.current((currentlyPlaying) => currentlyPlaying + 1);
+  // };
 
-  const handleVideoEnded = () => {
-    //todo delete previous video from db
-    // console.log(playlist[currentlyPlayingIndex].videoId);
-
-    // playNextVideo();
-    setPlaylist(playlist.filter((x) => x.videoId !== playlist[currentlyPlayingIndex].videoId));
+  const handleVideoEnded = async () => {
+    const endedVideoId = playlist[currentlyPlayingIndex.current].videoId;
+    const { error } = await fetchAPI(RequestMethod.DELETE, `${REMOVE_VIDEO}/${endedVideoId}`);
+    if (error) {
+      return alert(error);
+    }
+    setPlaylist(
+      playlist.filter((playlistVideo) => playlistVideo.videoId !== playlist[currentlyPlayingIndex.current].videoId)
+    );
     // console.log(playlist);
   };
 
-  const handleAddVideo = (videoId: string) => {
-    // todo call api backend
-    setPlaylist([...playlist, { addedAt: new Date(), duration: 200, title: "new video", videoId }]);
+  const handleAddVideo = async (videoId: string) => {
+    const { res, error } = await fetchAPI(RequestMethod.POST, ADD_YOUTUBE_VIDEO, { videoId });
+    if (error) {
+      return alert(error);
+    }
   };
 
   useEffect(() => {
-    setPlaylist(fetchPlaylist());
+    (async function () {
+      setPlaylist(await fetchPlaylist());
+    })();
   }, []);
 
   // useEffect(() => {
   //   // as soon as video is added it should be played
-  //   if (currentlyPlayingIndex === playlist.length) playNextVideo();
+  //   if (currentlyPlayingIndex.current === playlist.length) playNextVideo();
   // }, [playlist]);
 
   return (
@@ -47,8 +64,8 @@ export const PlaylistContainer = () => {
       <VideoList videos={playlist} onVideoAdded={handleAddVideo} />
 
       <VideoPlayer
-        isPlaylistEnded={currentlyPlayingIndex === playlist.length}
-        playingVideoId={playlist[currentlyPlayingIndex]?.videoId}
+        isPlaylistEnded={currentlyPlayingIndex.current === playlist.length}
+        playingVideoId={playlist[currentlyPlayingIndex.current]?.videoId}
         onVideoEnded={handleVideoEnded}
       />
     </div>

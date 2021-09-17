@@ -9,7 +9,7 @@ export abstract class GenericCrudController<T extends Document> {
   // every crud method of basic controller can go here, everyone can extend the basic functionality
   protected getEntitiesPaginated = errorHandler(async (req: Request, res: Response) => {
     const { limit, cursor, ...additionalFilters } = req.query;
-    if (!cursor || !limit) {
+    if (!limit) {
       const entities = await this.dbEntity.fetchAll();
       return res.json({ entities });
     }

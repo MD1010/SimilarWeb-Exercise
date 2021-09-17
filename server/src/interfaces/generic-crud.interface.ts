@@ -1,5 +1,9 @@
 export interface IReadEntity<T> {
-  fetchPaginated: (filter: { [key: string]: any }, cursor: string, limit?: number | undefined) => Promise<T[]>;
+  fetchPaginated: (
+    filter: { [key: string]: any },
+    cursor: string | undefined,
+    limit?: number | undefined
+  ) => Promise<T[]>;
 }
 
 export interface IWriteEntity<T> {

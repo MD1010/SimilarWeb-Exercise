@@ -41,9 +41,10 @@ export class DbEnity<T extends Document> implements IReadEntity<T>, IWriteEntity
       });
   }
 
-  fetchPaginated(filter: { [key: string]: any }, cursor: string, limit?: number | undefined) {
+  fetchPaginated(filter: { [key: string]: any }, cursor: string | undefined, limit?: number | undefined) {
+    const findObject = cursor ? { ...filter, _id: { $gt: cursor } } : { ...filter };
     return this._model
-      .find({ ...filter, _id: { $gt: cursor } })
+      .find(findObject)
       .limit(limit ? limit : 0)
 
       .then((result) => {
