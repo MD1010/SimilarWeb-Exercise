@@ -1,4 +1,4 @@
-export { User } from "./user.model";
+export { Video as User } from "./video.model";
 export { Exercise } from "./exercise.model";
 export { Muscle } from "./muscle.model";
 export { Post } from "./post.model";

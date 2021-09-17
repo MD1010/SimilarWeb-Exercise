@@ -1,15 +1,12 @@
 import mongoose from "mongoose";
 
-export default (db: any) => {
+export default (connectionString: any) => {
   const connect = () => {
     try {
       mongoose
-        .connect(db, {
-          useNewUrlParser: true,
-          useUnifiedTopology: true,
-        })
+        .connect(connectionString)
         .then(() => {
-          return console.info(`Successfully connected to ${db}`);
+          return console.info(`Successfully connected to ${connectionString}`);
         })
         .catch((error) => {
           console.error("Error connecting to database: ", error);

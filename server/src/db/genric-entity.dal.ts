@@ -15,13 +15,6 @@ export class DbEnity<T extends Document> implements IReadEntity<T>, IWriteEntity
   };
 
   async create(entity: T) {
-    if (entity._id) {
-      throw Exceptions.BAD_REQUEST;
-    }
-
-    const res = await this._model.find({ name: (entity as any).name });
-    if (res.length) throw Exceptions.ENTITY_EXISTS;
-
     return this._model
       .create(entity)
       .then((res) => {
@@ -29,19 +22,6 @@ export class DbEnity<T extends Document> implements IReadEntity<T>, IWriteEntity
           throw Exceptions.CREATE_FAILED;
         }
         return res as T;
-      })
-      .catch((error: Error) => {
-        throw error;
-      });
-  }
-
-  updateOne(id: string, entity: T) {
-    return this._model
-      .updateOne({ _id: toObjectId(id) }, entity)
-      .then((res) => {
-        if (!res.nModified) {
-          throw Exceptions.UPDATE_FAILED;
-        }
       })
       .catch((error: Error) => {
         throw error;
@@ -61,16 +41,22 @@ export class DbEnity<T extends Document> implements IReadEntity<T>, IWriteEntity
       });
   }
 
-  async findOne(filter: { [key: string]: any }) {
-    const [result] = await this.find(filter);
-    return result;
+  fetchPaginated(filter: { [key: string]: any }, cursor: string, limit?: number | undefined) {
+    return this._model
+      .find({ ...filter, _id: { $gt: cursor } })
+      .limit(limit ? limit : 0)
+
+      .then((result) => {
+        return result as T[];
+      })
+      .catch((error: Error) => {
+        throw error;
+      });
   }
 
-  find(filter: { [key: string]: any }, pageNumber?: string) {
+  fetchAll() {
     return this._model
-      .find(filter)
-      .skip(pageNumber ? (parseInt(pageNumber) - 1) * 6 : 0)
-      .limit(pageNumber ? 6 : 0)
+      .find()
 
       .then((result) => {
         return result as T[];

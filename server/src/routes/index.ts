@@ -1,1 +1,1 @@
-export { userRouter } from "./user.route";
+export { playlistRouter } from "./playlist.route";

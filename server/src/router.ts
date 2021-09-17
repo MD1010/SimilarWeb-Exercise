@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { userRouter } from "./routes";
+import { playlistRouter } from "./routes";
 
 export const appRouter = Router();
 
-appRouter.use("/api/users", userRouter);
+appRouter.use("/api/playlist", playlistRouter);
 
 appRouter.get("/check", (req, res) => {
   res.send("ok");
