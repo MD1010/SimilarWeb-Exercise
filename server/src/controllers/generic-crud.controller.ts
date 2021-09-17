@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { isEmpty } from "lodash";
 import { Document } from "mongoose";
 import { DbEnity } from "../db";
 import { errorHandler } from "../utils";
@@ -7,16 +6,16 @@ import { errorHandler } from "../utils";
 export abstract class GenericCrudController<T extends Document> {
   constructor(protected dbEntity: DbEnity<T>) {}
 
+  // every crud method of basic controller can go here, everyone can extend the basic functionality
   protected getEntitiesPaginated = errorHandler(async (req: Request, res: Response) => {
-    let { limit, cursor, ...additionalFilters } = req.query;
-    if (!cursor || !limit) return res.json({ entities: await this.dbEntity.fetchAll() });
-    const entities = await this.dbEntity.fetchPaginated(additionalFilters, cursor?.toString(), +limit);
-    return res.json({ entities, cursor: entities[entities.length - 1]._id });
-  });
+    const { limit, cursor, ...additionalFilters } = req.query;
+    if (!cursor || !limit) {
+      const entities = await this.dbEntity.fetchAll();
+      return res.json({ entities });
+    }
 
-  protected createEntity = errorHandler(async (req: Request, res: Response) => {
-    const newEntity = await this.dbEntity.create(req.body);
-    return res.json({ created: newEntity._id });
+    const entities = await this.dbEntity.fetchPaginated(additionalFilters, cursor?.toString(), +limit);
+    return res.json({ entities, cursor: entities[entities.length - 1]?._id });
   });
 
   protected deleteEntity = errorHandler(async (req: Request, res: Response) => {

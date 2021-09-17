@@ -5,7 +5,7 @@ import { toObjectId } from "../utils/base-id";
 
 export class DbEnity<T extends Document> implements IReadEntity<T>, IWriteEntity<T> {
   protected _model: Model<Document>;
-
+  // generic wrapper for a db functionality, can easily be extended
   constructor(modelName: string, schema: Schema) {
     this._model = mongoose.model(modelName, schema);
   }

@@ -1,3 +1,3 @@
 export * from "./base-id";
-export * from "./errorHandler";
+export * from "../middlewares/errorHandler";
 export * from "./exceptions";
