@@ -1,13 +1,14 @@
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 import { IVideo } from "../../interfaces/Video";
 import { VideoListItem } from "./VideoListItem";
 import "./videoList.scss";
 
 interface VideoListProps {
   videos: IVideo[];
+  onVideoAdded: (videoId: string) => void;
 }
 
-export const VideoList: React.FC<VideoListProps> = ({ videos }) => {
+export const VideoList: React.FC<VideoListProps> = memo(({ videos, onVideoAdded: addVideo }) => {
   const [videoId, setVideoId] = useState<string>("");
 
   const handleVideoIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -15,8 +16,9 @@ export const VideoList: React.FC<VideoListProps> = ({ videos }) => {
   };
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (videoId.length < 11) return;
     setVideoId("");
-    //todo add song axios post
+    addVideo(videoId);
   };
 
   return (
@@ -27,8 +29,8 @@ export const VideoList: React.FC<VideoListProps> = ({ videos }) => {
       </form>
 
       {videos.map((videoItem) => (
-        <VideoListItem key={videoItem.videoId} video={videoItem} />
+        <VideoListItem key={videoItem.title} video={videoItem} />
       ))}
     </div>
   );
-};
+});

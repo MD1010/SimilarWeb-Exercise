@@ -6,15 +6,16 @@ import { MuteButton } from "../../components/shared/Mute";
 interface VideoPlayerProps {
   playingVideoId: string | undefined;
   onVideoEnded: () => void;
+  isPlaylistEnded?: boolean;
 }
 
-export const VideoPlayer: React.FC<VideoPlayerProps> = ({ playingVideoId, onVideoEnded }) => {
+export const VideoPlayer: React.FC<VideoPlayerProps> = ({ playingVideoId, onVideoEnded, isPlaylistEnded }) => {
   const [isMuted, setIsMuted] = useState(true);
 
   // };
   return (
     <div style={{}}>
-      <MuteButton isMuted={isMuted} setIsMuted={setIsMuted} />
+      {!isPlaylistEnded ? <MuteButton isMuted={isMuted} setIsMuted={setIsMuted} /> : null}
       <ReactPlayer
         // onBuffer={() => console.log("buffering")}
         // onSeek={() => console.log(0)}
