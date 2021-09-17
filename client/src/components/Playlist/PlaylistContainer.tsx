@@ -12,6 +12,7 @@ export const PlaylistContainer = () => {
   // const [playingVideo, setCurrentVideo] = useState<IVideo | undefined>();
   // const [currentlyPlayingIndex.current, setCurrentlyPlayingIndex.current] = useState(0);
   const currentlyPlayingIndex = useRef(0);
+  const [error, setError] = useState<string>();
 
   const fetchPlaylist = async () => {
     const { res, error } = await fetchAPI(RequestMethod.GET, FETCH_PLAYLIST, null, {
@@ -19,40 +20,44 @@ export const PlaylistContainer = () => {
       cursor: playlist[playlist.length - 1]?._id,
     });
     if (error) {
-      return alert(error);
+      return setError(error);
     }
-    return res.entities;
+    setPlaylist(res.entities);
   };
 
+  useEffect(() => {
+    error && alert(error);
+  }, [error]);
   // const playNextVideo = () => {
   //   if (currentlyPlayingIndex.current < playlist.length - 1)
   //     setCurrentlyPlayingIndex.current((currentlyPlaying) => currentlyPlaying + 1);
   // };
 
   const handleVideoEnded = async () => {
-    const endedVideoId = playlist[currentlyPlayingIndex.current].videoId;
+    const endedVideoId = playlist[currentlyPlayingIndex.current]._id;
     const { error } = await fetchAPI(RequestMethod.DELETE, `${REMOVE_VIDEO}/${endedVideoId}`);
     if (error) {
-      return alert(error);
+      return setError(error);
     }
-    setPlaylist(
-      playlist.filter((playlistVideo) => playlistVideo.videoId !== playlist[currentlyPlayingIndex.current].videoId)
-    );
+
+    setPlaylist(playlist.filter((playlistVideo) => playlistVideo._id !== playlist[currentlyPlayingIndex.current]._id));
     // console.log(playlist);
   };
 
   const handleAddVideo = async (videoId: string) => {
-    const { res, error } = await fetchAPI(RequestMethod.POST, ADD_YOUTUBE_VIDEO, { videoId });
+    const { error } = await fetchAPI(RequestMethod.POST, ADD_YOUTUBE_VIDEO, { videoId });
     if (error) {
-      return alert(error);
+      return setError(error);
     }
   };
 
   useEffect(() => {
-    (async function () {
-      setPlaylist(await fetchPlaylist());
-    })();
+    fetchPlaylist();
   }, []);
+
+  useEffect(() => {
+    !error && !playlist.length && fetchPlaylist();
+  }, [playlist]);
 
   // useEffect(() => {
   //   // as soon as video is added it should be played

@@ -23,7 +23,7 @@ export const fetchAPI = async <T = any>(
         const { data } = await axios.get<T>(url, { params, headers });
         return { res: data, error: null };
       } catch (error) {
-        return { res: null, error: (error as AxiosError).response?.data || (error as AxiosError).message };
+        return { res: null, error: (error as AxiosError).response?.data.error || (error as AxiosError).message };
       }
     }
     case RequestMethod.POST: {
@@ -31,7 +31,7 @@ export const fetchAPI = async <T = any>(
         const { data } = await axios.post<T>(url, body, { headers, method });
         return { res: data, error: null };
       } catch (error) {
-        return { res: null, error: (error as AxiosError).response?.data || (error as AxiosError).message };
+        return { res: null, error: (error as AxiosError).response?.data.error || (error as AxiosError).message };
       }
     }
 
@@ -40,7 +40,7 @@ export const fetchAPI = async <T = any>(
         const { data } = await axios.delete<T>(url, { data: body, headers, method });
         return { res: data, error: null };
       } catch (error) {
-        return { res: null, error: (error as AxiosError).response?.data || (error as AxiosError).message };
+        return { res: null, error: (error as AxiosError).response?.data.error || (error as AxiosError).message };
       }
     }
     case RequestMethod.PUT: {
@@ -48,7 +48,7 @@ export const fetchAPI = async <T = any>(
         const { data } = await axios.put<T>(url, body, { headers, method });
         return { res: data, error: null };
       } catch (error) {
-        return { res: null, error: (error as AxiosError).response?.data || (error as AxiosError).message };
+        return { res: null, error: (error as AxiosError).response?.data.error || (error as AxiosError).message };
       }
     }
 

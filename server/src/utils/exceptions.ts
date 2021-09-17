@@ -42,4 +42,8 @@ export namespace Exceptions {
     message: "Bad Request",
     code: 400,
   };
+  export const INVALID_VIDEO: IServerException = {
+    message: "Video id is invalid",
+    code: 400,
+  };
 }
