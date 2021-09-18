@@ -3,5 +3,5 @@ export interface IVideo {
   title: string;
   videoId: string;
   addedAt: Date;
-  duration: number;
+  duration: string;
 }

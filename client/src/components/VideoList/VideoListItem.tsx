@@ -10,7 +10,7 @@ export const VideoListItem: React.FC<VideoListItemProps> = ({ video }) => {
   return (
     <div className="video-item">
       <span>{title}</span>
-      <span style={{ marginLeft: "15px", fontWeight: "bold" }}>{duration}</span>
+      <span style={{ marginLeft: "15px", fontWeight: "bold" }}>{duration === "0:00" ? "live" : duration}</span>
     </div>
   );
 };

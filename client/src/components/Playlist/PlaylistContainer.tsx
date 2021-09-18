@@ -14,15 +14,21 @@ export const PlaylistContainer = () => {
   // const [videosLeftToFetch, setVideosLeftToFetch] = useState(true);
   const [error, setError] = useState<string>();
   const [added, setAdded] = useState<IVideo[]>([]);
+  const [hasMoreToLoad, setHasMoreToLoad] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState(false);
+
   const fetchPlaylist = async () => {
+    setIsLoading(true);
     const { res, error } = await fetchAPI(RequestMethod.GET, FETCH_PLAYLIST, null, {
-      limit: VIDEO_FETCH_COUNT - playlist.length > 0 ? VIDEO_FETCH_COUNT - playlist.length : VIDEO_FETCH_COUNT,
+      limit: VIDEO_FETCH_COUNT,
       cursor: playlist[playlist.length - 1]?._id,
     });
     if (error) {
       return setError(error);
     }
+    setIsLoading(false);
     if (res.entities.length) setPlaylist([...playlist, ...res.entities]);
+    if (res.entities.length < VIDEO_FETCH_COUNT) setHasMoreToLoad(false);
   };
 
   useEffect(() => {
@@ -41,11 +47,9 @@ export const PlaylistContainer = () => {
     if (error) {
       return setError(error);
     }
-    console.log("before", playlist);
     // playlist.filter((playlistVideo) => playlistVideo._id !== playlist[0]._id)
 
     setPlaylist(playlist.slice(1));
-    console.log("after", playlist);
     // setPlayingVideo(playlist[0]);
     // console.log(playlist);
   };
@@ -56,6 +60,7 @@ export const PlaylistContainer = () => {
       return setError(error);
     }
     res.created && setAdded([...added, res.created]);
+    setHasMoreToLoad(true);
     // we will fetch the added video when we reach it, in order to preserve the playing order
     // setPlaylist([...playlist, res.created]);
   };
@@ -65,27 +70,20 @@ export const PlaylistContainer = () => {
   // }, []);
 
   useEffect(() => {
-    playlist.length < 10 && fetchPlaylist();
+    playlist.length < VIDEO_FETCH_COUNT && fetchPlaylist();
   }, [added.length]);
-  // useEffect(() => {
-  //   // todo maybe change the condition??? meybe fetch while less then 10
-  //   !error && !playlist.length && fetchPlaylist();
-  // }, [playlist]);
-
-  // useEffect(() => {
-  //   // as soon as video is added it should be played
-  //   if (currentlyPlayingIndex.current === playlist.length) playNextVideo();
-  // }, [playlist]);
 
   return (
     <div className="playlist-container">
-      <VideoList videos={playlist} onVideoAdded={handleAddVideo} />
-
-      <VideoPlayer
-        // isPlaylistEnded={currentlyPlayingIndex === playlist.length}
-        playingVideo={playlist[0]}
-        onVideoEnded={handleVideoEnded}
+      <VideoList
+        isLoading={isLoading}
+        videos={playlist}
+        onVideoAdded={handleAddVideo}
+        hasMoreToLoad={hasMoreToLoad}
+        loadMore={fetchPlaylist}
       />
+
+      <VideoPlayer isPlaylistEnded={!playlist.length} playingVideo={playlist[0]} onVideoEnded={handleVideoEnded} />
     </div>
   );
 };
