@@ -41,13 +41,12 @@ export class DbEnity<T extends Document> implements IReadEntity<T>, IWriteEntity
       });
   }
 
-  deleteOne(id: string) {
+  async deleteOne(id: string) {
+    // only check for errors with catch as someone may already deleted the resource
     return this._model
       .deleteOne({ _id: toObjectId(id) })
-      .then((res) => {
-        if (!res.deletedCount) {
-          throw new DeleteFailedException(this._failedCrudMessages.onDeleteFailed);
-        }
+      .then(() => {
+        return;
       })
       .catch((error: Error) => {
         throw error;

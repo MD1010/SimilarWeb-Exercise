@@ -1,19 +1,17 @@
 .video-list {
   height: 400px;
   overflow: auto;
-  // margin-top: 5rem;
   margin: 2rem;
-  // overflow-y: scroll;
 }
 .video-item {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin: 10px;
   margin-left: 0;
   border: 1px solid;
   padding: 5px;
   border-radius: 5px;
-  // width: 20rem;
 }
 .add-video-form {
   display: flex;
