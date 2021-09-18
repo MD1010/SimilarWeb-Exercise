@@ -22,15 +22,16 @@ export const VideoList: React.FC<VideoListProps> = memo(({ videos, onVideoAdded:
   };
 
   return (
-    <div className="video-list">
-      <form onSubmit={handleSubmit}>
-        <input type="text" value={videoId} onChange={handleVideoIdChange}></input>
-        <input type="submit"></input>
-      </form>
-
-      {videos.map((videoItem) => (
-        <VideoListItem key={videoItem._id} video={videoItem} />
-      ))}
-    </div>
+    <>
+      <div className="video-list">
+        <form onSubmit={handleSubmit} className="add-video-form">
+          <input className="text" type="text" value={videoId} onChange={handleVideoIdChange}></input>
+          <input className="submit-btn" type="submit"></input>
+        </form>
+        {videos.map((videoItem) => (
+          <VideoListItem key={videoItem._id} video={videoItem} />
+        ))}
+      </div>
+    </>
   );
 });
