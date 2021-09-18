@@ -3,48 +3,36 @@ export interface IServerException {
   code: number;
 }
 
-export namespace Exceptions {
-  export const UNAUTHORIZED: IServerException = {
-    message: "Wrong Credentials, please try again",
-    code: 401,
-  };
+export abstract class Exception extends Error {
+  message: string;
+  code: number;
+  constructor(private _message: string, private _code: number) {
+    super();
+    this.message = this._message;
+    this.code = this._code;
+  }
+}
 
-  export const SESSION_TIMEOUT: IServerException = {
-    message: "Session Timeout",
-    code: 403,
-  };
+export class EntityExistsException extends Exception {
+  constructor(message: string = "Entity already exists", code: number = 409) {
+    super(message, code);
+  }
+}
 
-  export const ENTITY_EXISTS: IServerException = {
-    message: "Entity already exists",
-    code: 409,
-  };
+export class CreateFailedException extends Exception {
+  constructor(message: string = "Failed to create entity", code: number = 500) {
+    super(message, code);
+  }
+}
 
-  export const ENTITY_DOES_NOT_EXISTS: IServerException = {
-    message: "Entity does not exists",
-    code: 404,
-  };
+export class DeleteFailedException extends Exception {
+  constructor(message: string = "Failed to delete entity", code: number = 500) {
+    super(message, code);
+  }
+}
 
-  export const CREATE_FAILED: IServerException = {
-    message: "Entity failed to create",
-    code: 500,
-  };
-
-  export const UPDATE_FAILED: IServerException = {
-    message: "Entity Update failed",
-    code: 500,
-  };
-
-  export const DELETE_FAILED: IServerException = {
-    message: "Entity Deletion failed",
-    code: 500,
-  };
-
-  export const BAD_REQUEST: IServerException = {
-    message: "Bad Request",
-    code: 400,
-  };
-  export const INVALID_VIDEO: IServerException = {
-    message: "Video id is invalid",
-    code: 400,
-  };
+export class BadRequestException extends Exception {
+  constructor(message: string = "Bad Request", code: number = 400) {
+    super(message, code);
+  }
 }

@@ -1,31 +1,40 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
+import { FailedCrudMessage } from "../interfaces/failed-crud-message.interface";
 import { IReadEntity, IWriteEntity, SortOrder } from "../interfaces/generic-crud.interface";
-import { Exceptions } from "../utils";
+import { CreateFailedException, DeleteFailedException, EntityExistsException } from "../utils";
 import { toObjectId } from "../utils/base-id";
 
 export class DbEnity<T extends Document> implements IReadEntity<T>, IWriteEntity<T> {
   protected _model: Model<Document>;
+  private _failedCrudMessages;
   // generic wrapper for a db functionality, can easily be extended
-  constructor(modelName: string, schema: Schema) {
+  constructor(modelName: string, schema: Schema, failedCrudMessages: FailedCrudMessage) {
     this._model = mongoose.model(modelName, schema);
+    this._failedCrudMessages = failedCrudMessages;
   }
 
   getModel = () => {
     return this._model;
   };
 
+  getFailedCrudMessages = () => {
+    return this._failedCrudMessages;
+  };
+
   async create(entity: T, entityLocator: string, allowDuplicates: boolean = false) {
     if (!allowDuplicates) {
       const entityExists = await this._model.find({ [entityLocator]: (entity as any)[entityLocator] });
       if (entityExists) {
-        throw Exceptions.ENTITY_EXISTS;
+        console.log(this._failedCrudMessages.onEntityExists);
+
+        throw new EntityExistsException(this._failedCrudMessages.onEntityExists);
       }
     }
     return this._model
       .create(entity)
       .then((res) => {
         if (!res) {
-          throw Exceptions.CREATE_FAILED;
+          throw new CreateFailedException(this._failedCrudMessages.onCreateFailed);
         }
         return res as T;
       })
@@ -39,7 +48,7 @@ export class DbEnity<T extends Document> implements IReadEntity<T>, IWriteEntity
       .deleteOne({ _id: toObjectId(id) })
       .then((res) => {
         if (!res.deletedCount) {
-          throw Exceptions.DELETE_FAILED;
+          throw new DeleteFailedException(this._failedCrudMessages.onDeleteFailed);
         }
       })
       .catch((error: Error) => {

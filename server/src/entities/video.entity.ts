@@ -9,4 +9,8 @@ const VideoSchema: Schema = new Schema({
   duration: { type: String },
 });
 
-export const VideoEntity = new DbEnity<Video>("Video", VideoSchema);
+export const VideoEntity = new DbEnity<Video>("Video", VideoSchema, {
+  onCreateFailed: "Failed to add Video to playlist",
+  onDeleteFailed: "Failed to delete video",
+  onEntityExists: "Video Id already exists",
+});

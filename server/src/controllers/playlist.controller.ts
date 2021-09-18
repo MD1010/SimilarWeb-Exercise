@@ -3,8 +3,8 @@ import { Request, Response } from "express";
 import { VideoEntity } from "../entities";
 import { IVideo } from "../interfaces/video.interface";
 import { Video } from "../models/video.model";
-import { errorHandler, Exceptions } from "../utils";
-import { YT_VIDEOS_API } from "../utils/consts";
+import { CreateFailedException, EntityExistsException, errorHandler } from "../utils";
+import { YT_VIDEOS_API } from "../utils/api-consts";
 import { formatDuration } from "../utils/helpers";
 import { GenericCrudController } from "./generic-crud.controller";
 
@@ -24,9 +24,8 @@ export class PlaylistController extends GenericCrudController<Video> {
 
     const title = response.data?.items?.[0]?.snippet.title;
     const duration = formatDuration(response.data?.items?.[0]?.contentDetails.duration);
-    // console.log(12312312);
 
-    if (!title || !duration) throw Exceptions.INVALID_VIDEO;
+    if (!title || !duration) throw new CreateFailedException("Invalid video Id", 400);
     const newVideoCreated = await this.dbEntity.create({ videoId, title, duration } as any, "videoId");
     return res.status(201).json({ created: newVideoCreated });
   });
