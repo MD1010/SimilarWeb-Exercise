@@ -3,6 +3,7 @@ import ReactPlayer from "react-player";
 // import YouTube from "react-youtube";
 import { MuteButton } from "../../components/shared/Mute";
 import { IVideo } from "../../interfaces/Video";
+import "./player.scss";
 
 interface VideoPlayerProps {
   playingVideo: IVideo | undefined;
@@ -14,11 +15,10 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ playingVideo, onVideoE
   const [isMuted, setIsMuted] = useState(true);
   // };
   return (
-    <div style={{}}>
+    <div className="player-wrapper">
       {!isPlaylistEnded ? <MuteButton isMuted={isMuted} setIsMuted={setIsMuted} /> : null}
       <ReactPlayer
-        // onBuffer={() => console.log("buffering")}
-        // onSeek={() => console.log(0)}
+        className="player"
         onEnded={onVideoEnded}
         playing
         muted={isMuted}

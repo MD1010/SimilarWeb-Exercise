@@ -8,9 +8,9 @@ interface VideoListItemProps {
 export const VideoListItem: React.FC<VideoListItemProps> = ({ video }) => {
   const { title, duration } = video;
   return (
-    <div>
+    <div className="video-item">
       <span>{title}</span>
-      <span>{duration}</span>
+      <span style={{ marginLeft: "15px", fontWeight: "bold" }}>{duration}</span>
     </div>
   );
 };

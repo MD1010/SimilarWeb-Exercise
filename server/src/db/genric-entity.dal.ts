@@ -23,10 +23,8 @@ export class DbEnity<T extends Document> implements IReadEntity<T>, IWriteEntity
 
   async create(entity: T, entityLocator: string, allowDuplicates: boolean = false) {
     if (!allowDuplicates) {
-      const entityExists = await this._model.find({ [entityLocator]: (entity as any)[entityLocator] });
-      if (entityExists) {
-        console.log(this._failedCrudMessages.onEntityExists);
-
+      const entitiesFound = await this._model.find({ [entityLocator]: (entity as any)[entityLocator] });
+      if (entitiesFound.length) {
         throw new EntityExistsException(this._failedCrudMessages.onEntityExists);
       }
     }

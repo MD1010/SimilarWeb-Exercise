@@ -1,3 +1,30 @@
 .video-list {
-  flex: 1;
+  height: 400px;
+  overflow: auto;
+  // margin-top: 5rem;
+  margin: 2rem;
+  // overflow-y: scroll;
+}
+.video-item {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px;
+  margin-left: 0;
+  border: 1px solid;
+  padding: 5px;
+  border-radius: 5px;
+  // width: 20rem;
+}
+.add-video-form {
+  display: flex;
+  justify-content: space-between;
+  & .text {
+    flex: 5;
+    padding: 5px;
+    margin-right: 5px;
+  }
+
+  & .submit-btn {
+    padding: 3px;
+  }
 }

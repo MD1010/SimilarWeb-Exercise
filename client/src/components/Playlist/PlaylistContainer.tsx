@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ADD_YOUTUBE_VIDEO, FETCH_PLAYLIST, REMOVE_VIDEO } from "../../api/playlist";
 import { VideoPlayer } from "../../common/VideoPlayer/VideoPlayer";
 import { IVideo } from "../../interfaces/Video";
@@ -9,20 +9,20 @@ import "./playlist.scss";
 
 export const PlaylistContainer = () => {
   const [playlist, setPlaylist] = useState<IVideo[]>([]);
-  const [playingVideo, setPlayingVideo] = useState<IVideo>();
+  // const [playingVideo, setPlayingVideo] = useState<IVideo>();
   // const [currentlyPlayingIndex.current, setCurrentlyPlayingIndex.current] = useState(0);
-
+  // const [videosLeftToFetch, setVideosLeftToFetch] = useState(true);
   const [error, setError] = useState<string>();
-
+  const [added, setAdded] = useState<IVideo[]>([]);
   const fetchPlaylist = async () => {
     const { res, error } = await fetchAPI(RequestMethod.GET, FETCH_PLAYLIST, null, {
-      limit: VIDEO_FETCH_COUNT,
+      limit: VIDEO_FETCH_COUNT - playlist.length > 0 ? VIDEO_FETCH_COUNT - playlist.length : VIDEO_FETCH_COUNT,
       cursor: playlist[playlist.length - 1]?._id,
     });
     if (error) {
       return setError(error);
     }
-    setPlaylist(res.entities);
+    if (res.entities.length) setPlaylist([...playlist, ...res.entities]);
   };
 
   useEffect(() => {
@@ -46,36 +46,27 @@ export const PlaylistContainer = () => {
 
     setPlaylist(playlist.slice(1));
     console.log("after", playlist);
-    setPlayingVideo(playlist[0]);
+    // setPlayingVideo(playlist[0]);
     // console.log(playlist);
   };
 
   const handleAddVideo = async (videoId: string) => {
-    const { error } = await fetchAPI(RequestMethod.POST, ADD_YOUTUBE_VIDEO, { videoId });
+    const { error, res } = await fetchAPI(RequestMethod.POST, ADD_YOUTUBE_VIDEO, { videoId });
     if (error) {
       return setError(error);
     }
+    res.created && setAdded([...added, res.created]);
     // we will fetch the added video when we reach it, in order to preserve the playing order
+    // setPlaylist([...playlist, res.created]);
   };
 
-  useEffect(() => {
-    fetchPlaylist();
-  }, []);
+  // useEffect(() => {
+  //   fetchPlaylist();
+  // }, []);
 
   useEffect(() => {
-    // console.log(
-    //   "MOD len = ",
-    //   playlist.length,
-    //   "playingVideoUriId !== playlist[0].videoId",
-    //   playingVideoUriId !== playlist[0]?.videoId,
-    //   "playlist[0].videoId",
-    //   playlist[0]?.videoId
-    // );
-    console.log("Will set?", playlist.length && playingVideo?._id !== playlist[0]?._id);
-
-    playlist.length && playingVideo?._id !== playlist[0]?._id && setPlayingVideo(playlist[0]);
-  }, [playlist]);
-
+    playlist.length < 10 && fetchPlaylist();
+  }, [added.length]);
   // useEffect(() => {
   //   // todo maybe change the condition??? meybe fetch while less then 10
   //   !error && !playlist.length && fetchPlaylist();
@@ -92,7 +83,7 @@ export const PlaylistContainer = () => {
 
       <VideoPlayer
         // isPlaylistEnded={currentlyPlayingIndex === playlist.length}
-        playingVideo={playingVideo}
+        playingVideo={playlist[0]}
         onVideoEnded={handleVideoEnded}
       />
     </div>
