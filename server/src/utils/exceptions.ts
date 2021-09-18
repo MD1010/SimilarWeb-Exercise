@@ -2,6 +2,7 @@ export interface IServerException {
   message: string;
   code: number;
 }
+
 export namespace Exceptions {
   export const UNAUTHORIZED: IServerException = {
     message: "Wrong Credentials, please try again",
@@ -15,7 +16,7 @@ export namespace Exceptions {
 
   export const ENTITY_EXISTS: IServerException = {
     message: "Entity already exists",
-    code: 409, // conflict
+    code: 409,
   };
 
   export const ENTITY_DOES_NOT_EXISTS: IServerException = {
