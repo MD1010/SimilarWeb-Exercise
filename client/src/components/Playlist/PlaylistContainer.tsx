@@ -35,9 +35,7 @@ export const PlaylistContainer = () => {
   }, [error]);
 
   const handleVideoEnded = async () => {
-    const endedVideoId = playlist[0]._id;
-    //todo what happends when video was deleted by other client
-    const { error } = await fetchAPI(RequestMethod.DELETE, `${REMOVE_VIDEO}/${endedVideoId}`);
+    const { error } = await fetchAPI(RequestMethod.DELETE, `${REMOVE_VIDEO}/${playlist[0]._id}`);
     if (error) {
       return setError(error);
     }

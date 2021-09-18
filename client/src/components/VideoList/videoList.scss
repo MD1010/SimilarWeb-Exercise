@@ -1,14 +1,14 @@
 .video-list {
   height: 400px;
   overflow: auto;
+  width: 50%;
   margin: 2rem;
 }
 .video-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 10px;
-  margin-left: 0;
+  margin: 10px 0;
   border: 1px solid;
   padding: 5px;
   border-radius: 5px;

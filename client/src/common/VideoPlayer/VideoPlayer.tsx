@@ -1,7 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import ReactPlayer from "react-player";
-// import YouTube from "react-youtube";
-import { MuteButton } from "../../components/shared/Mute";
 import { IVideo } from "../../interfaces/Video";
 import "./player.scss";
 

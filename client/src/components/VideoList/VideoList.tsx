@@ -38,8 +38,10 @@ export const VideoList: React.FC<VideoListProps> = memo(
             return (
               <div className="video-item">
                 <span>{title}</span>
-                {!index && <MuteButton isMuted={isCurrentVideoMuted} setIsMuted={setVideoMuted} />}
-                <span style={{ fontWeight: "bold" }}>{duration === "0:00" ? "live" : duration}</span>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  {!index && <MuteButton isMuted={isCurrentVideoMuted} setIsMuted={setVideoMuted} />}
+                  <span style={{ fontWeight: "bold", marginLeft: 10 }}>{duration === "0:00" ? "live" : duration}</span>
+                </div>
               </div>
             );
           })}
