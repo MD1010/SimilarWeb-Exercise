@@ -21,13 +21,13 @@ export class PlaylistController extends GenericCrudController<Video> {
     const response = await axios.get(
       `${YT_VIDEOS_API}?part=contentDetails,snippet&id=${videoId}&key=${process.env.YT_API_KEY}`
     );
-    try {
-      const title = response.data?.items?.[0].snippet.title;
-      const duration = formatDuration(response.data?.items?.[0].contentDetails.duration);
-      const newVideoCreated = await this.dbEntity.create({ videoId, title, duration } as any);
-      return res.status(201).json({ created: newVideoCreated });
-    } catch {
-      throw Exceptions.INVALID_VIDEO;
-    }
+
+    const title = response.data?.items?.[0]?.snippet.title;
+    const duration = formatDuration(response.data?.items?.[0]?.contentDetails.duration);
+    // console.log(12312312);
+
+    if (!title || !duration) throw Exceptions.INVALID_VIDEO;
+    const newVideoCreated = await this.dbEntity.create({ videoId, title, duration } as any, "videoId");
+    return res.status(201).json({ created: newVideoCreated });
   });
 }

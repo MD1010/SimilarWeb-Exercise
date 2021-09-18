@@ -1,5 +1,5 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
-import { IReadEntity, IWriteEntity } from "../interfaces/generic-crud.interface";
+import { IReadEntity, IWriteEntity, SortOrder } from "../interfaces/generic-crud.interface";
 import { Exceptions } from "../utils";
 import { toObjectId } from "../utils/base-id";
 
@@ -14,7 +14,13 @@ export class DbEnity<T extends Document> implements IReadEntity<T>, IWriteEntity
     return this._model;
   };
 
-  async create(entity: T) {
+  async create(entity: T, entityLocator: string, allowDuplicates: boolean = false) {
+    if (!allowDuplicates) {
+      const entityExists = await this._model.find({ [entityLocator]: (entity as any)[entityLocator] });
+      if (entityExists) {
+        throw Exceptions.ENTITY_EXISTS;
+      }
+    }
     return this._model
       .create(entity)
       .then((res) => {
@@ -41,10 +47,11 @@ export class DbEnity<T extends Document> implements IReadEntity<T>, IWriteEntity
       });
   }
 
-  fetchPaginated(filter: { [key: string]: any }, cursor: string | undefined, limit?: number | undefined) {
-    const findObject = cursor ? { ...filter, _id: { $gt: cursor } } : { ...filter };
+  fetchPaginated(sortBy: string, order: SortOrder, cursor: string | undefined, limit?: number | undefined) {
+    const findObject = cursor ? { _id: { $gt: cursor } } : {};
     return this._model
       .find(findObject)
+      .sort({ [sortBy]: order })
       .limit(limit ? limit : 0)
 
       .then((result) => {

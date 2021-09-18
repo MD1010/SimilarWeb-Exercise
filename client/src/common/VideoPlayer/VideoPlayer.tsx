@@ -2,16 +2,16 @@ import React, { useEffect, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 // import YouTube from "react-youtube";
 import { MuteButton } from "../../components/shared/Mute";
+import { IVideo } from "../../interfaces/Video";
 
 interface VideoPlayerProps {
-  playingVideoId: string | undefined;
+  playingVideo: IVideo | undefined;
   onVideoEnded: () => void;
   isPlaylistEnded?: boolean;
 }
 
-export const VideoPlayer: React.FC<VideoPlayerProps> = ({ playingVideoId, onVideoEnded, isPlaylistEnded }) => {
+export const VideoPlayer: React.FC<VideoPlayerProps> = ({ playingVideo, onVideoEnded, isPlaylistEnded }) => {
   const [isMuted, setIsMuted] = useState(true);
-
   // };
   return (
     <div style={{}}>
@@ -22,7 +22,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ playingVideoId, onVide
         onEnded={onVideoEnded}
         playing
         muted={isMuted}
-        url={`https://www.youtube.com/watch?v=${playingVideoId}&showinfo=0`}
+        url={`https://www.youtube.com/watch?v=${playingVideo?.videoId}&showinfo=0`}
       />
     </div>
   );
