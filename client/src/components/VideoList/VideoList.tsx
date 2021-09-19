@@ -11,6 +11,7 @@ interface VideoListProps {
   isLoading: boolean;
   isCurrentVideoMuted: boolean;
   setVideoMuted: (isMuted: boolean) => void;
+  setVideos: (videos: IVideo[]) => void;
 }
 
 export const VideoList: React.FC<VideoListProps> = memo(

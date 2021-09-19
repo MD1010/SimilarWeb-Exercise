@@ -58,6 +58,7 @@ export const PlaylistContainer = () => {
   return (
     <div className="playlist-container">
       <VideoList
+        setVideos={setPlaylist}
         isCurrentVideoMuted={isCurrentVideoMuted}
         isLoading={isLoading}
         videos={playlist}
