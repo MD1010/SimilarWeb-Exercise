@@ -10,7 +10,6 @@ interface VideoPlayerProps {
 }
 
 export const VideoPlayer: React.FC<VideoPlayerProps> = ({ playingVideo, onVideoEnded, isVideoMuted }) => {
-  // };
   return (
     <div className="player-wrapper">
       <ReactPlayer
@@ -18,7 +17,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ playingVideo, onVideoE
         onEnded={onVideoEnded}
         playing
         muted={isVideoMuted}
-        url={`https://www.youtube.com/watch?v=${playingVideo?.videoId}&showinfo=0`}
+        url={`https://www.youtube.com/watch?v=${playingVideo?.videoId}&showinfo=0`} //Todo move to variable
       />
     </div>
   );

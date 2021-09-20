@@ -3,9 +3,8 @@ import { Request, Response } from "express";
 import { YT_VIDEOS_API } from "../consts/api";
 import { PlaylistErrorMessages } from "../consts/playlist-error-messages";
 import { VideoEntity } from "../entities";
-import { IVideo } from "../interfaces/video.interface";
 import { Video } from "../models/video.model";
-import { CreateFailedException, EntityExistsException, errorHandler } from "../utils";
+import { CreateFailedException, errorHandler } from "../utils";
 import { formatDuration } from "../utils/helpers";
 import { GenericCrudController } from "./generic-crud.controller";
 

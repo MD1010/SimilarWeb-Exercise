@@ -43,16 +43,8 @@ export const fetchAPI = async <T = any>(
         return { res: null, error: (error as AxiosError).response?.data.error || (error as AxiosError).message };
       }
     }
-    case RequestMethod.PUT: {
-      try {
-        const { data } = await axios.put<T>(url, body, { headers, method });
-        return { res: data, error: null };
-      } catch (error) {
-        return { res: null, error: (error as AxiosError).response?.data.error || (error as AxiosError).message };
-      }
-    }
 
     default:
-      throw "Method specified doesn't exist";
+      throw "Method specified doesn't exist"; //TODO move it to an error const.
   }
 };

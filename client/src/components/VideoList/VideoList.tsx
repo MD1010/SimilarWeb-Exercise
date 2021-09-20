@@ -39,7 +39,7 @@ export const VideoList: React.FC<VideoListProps> = memo(
           <Container
             onDrop={({ addedIndex, removedIndex }) => {
               // this check is to prevent modifing the currently playing song
-              addedIndex && removedIndex && setVideos([...swapElements(videos, addedIndex!, removedIndex!)]);
+              addedIndex && removedIndex && setVideos([...swapElements(videos, addedIndex, removedIndex)]);
             }}
           >
             {videos.map((videoItem, index) => {
@@ -50,9 +50,7 @@ export const VideoList: React.FC<VideoListProps> = memo(
                     <span>{title}</span>
                     <div style={{ display: "flex", alignItems: "center" }}>
                       {!index && <MuteButton isMuted={isCurrentVideoMuted} setIsMuted={setVideoMuted} />}
-                      <span style={{ fontWeight: "bold", marginLeft: 10 }}>
-                        {duration === "0:00" ? "live" : duration}
-                      </span>
+                      <span style={{ fontWeight: "bold", marginLeft: 10 }}>{duration}</span>
                     </div>
                   </div>
                 </Draggable>
