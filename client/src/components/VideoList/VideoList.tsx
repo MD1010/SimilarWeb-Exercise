@@ -3,6 +3,7 @@ import { Container, Draggable } from "react-smooth-dnd";
 import { IVideo } from "../../interfaces/Video";
 import { swapElements } from "../../utils/helpers";
 import { MuteButton } from "../shared/Mute";
+import { FiTrash } from "react-icons/fi";
 import "./videoList.scss";
 
 interface VideoListProps {
@@ -14,10 +15,21 @@ interface VideoListProps {
   isCurrentVideoMuted: boolean;
   setVideoMuted: (isMuted: boolean) => void;
   setVideos: (videos: IVideo[]) => void;
+  onVideoDeleted: (videoId: string) => void;
 }
 
 export const VideoList: React.FC<VideoListProps> = memo(
-  ({ videos, setVideos, onVideoAdded, loadMore, hasMoreToLoad, isLoading, isCurrentVideoMuted, setVideoMuted }) => {
+  ({
+    videos,
+    setVideos,
+    onVideoAdded,
+    loadMore,
+    hasMoreToLoad,
+    isLoading,
+    isCurrentVideoMuted,
+    setVideoMuted,
+    onVideoDeleted,
+  }) => {
     const [videoId, setVideoId] = useState<string>("");
 
     const handleVideoIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,8 +45,8 @@ export const VideoList: React.FC<VideoListProps> = memo(
       <>
         <div className="video-list">
           <form onSubmit={handleSubmit} className="add-video-form">
-            <input className="text" type="text" value={videoId} onChange={handleVideoIdChange}></input>
-            <input className="submit-btn" type="submit"></input>
+            <input className="add-video-form__text" type="text" value={videoId} onChange={handleVideoIdChange}></input>
+            <input className="add-video-form__submit-btn" type="submit"></input>
           </form>
           <Container
             onDrop={({ addedIndex, removedIndex }) => {
@@ -48,9 +60,12 @@ export const VideoList: React.FC<VideoListProps> = memo(
                 <Draggable key={videoItem._id}>
                   <div className="video-item">
                     <span>{title}</span>
-                    <div style={{ display: "flex", alignItems: "center" }}>
+                    <div className="video-item__controls">
+                      <span className="video-item__delete" onClick={() => onVideoDeleted(videoItem._id)}>
+                        <FiTrash size={22} />
+                      </span>
                       {!index && <MuteButton isMuted={isCurrentVideoMuted} setIsMuted={setVideoMuted} />}
-                      <span style={{ fontWeight: "bold", marginLeft: 10 }}>{duration}</span>
+                      <span className="video-item__duration">{duration}</span>
                     </div>
                   </div>
                 </Draggable>

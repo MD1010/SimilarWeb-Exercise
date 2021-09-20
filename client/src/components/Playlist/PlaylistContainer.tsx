@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ADD_YOUTUBE_VIDEO, FETCH_PLAYLIST, REMOVE_VIDEO } from "../../api/playlist";
 import { VideoPlayer } from "../../common/VideoPlayer/VideoPlayer";
 import { IVideo } from "../../interfaces/Video";
-import { VIDEO_FETCH_COUNT } from "../../utils/consts";
+import { VIDEO_FETCH_COUNT, YT_PREFIX } from "../../utils/consts";
 import { fetchAPI, RequestMethod } from "../../utils/fetchAPI";
 import { VideoList } from "../VideoList/VideoList";
 import "./playlist.scss";
@@ -14,6 +14,7 @@ export const PlaylistContainer = () => {
   const [hasMoreToLoad, setHasMoreToLoad] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState(false);
   const [isCurrentVideoMuted, setIsMuted] = useState(true);
+  const playingVideoUri = `${YT_PREFIX}${playlist[0]?.videoId}&showinfo=0`;
 
   const fetchPlaylist = async () => {
     setIsLoading(true);
@@ -34,14 +35,6 @@ export const PlaylistContainer = () => {
     setError("");
   }, [error]);
 
-  const handleVideoEnded = async () => {
-    const { error } = await fetchAPI(RequestMethod.DELETE, `${REMOVE_VIDEO}/${playlist[0]._id}`);
-    if (error) {
-      return setError(error);
-    }
-    setPlaylist(playlist.slice(1));
-  };
-
   const handleAddVideo = async (videoId: string) => {
     const { error, res } = await fetchAPI(RequestMethod.POST, ADD_YOUTUBE_VIDEO, { videoId });
     if (error) {
@@ -51,9 +44,21 @@ export const PlaylistContainer = () => {
     setHasMoreToLoad(true);
   };
 
+  const handleDeleteVideo = async (videoId: string) => {
+    const { error } = await fetchAPI(RequestMethod.DELETE, `${REMOVE_VIDEO}/${videoId}`);
+    if (error) {
+      return setError(error);
+    }
+    setPlaylist(playlist.slice(1));
+  };
+
+  const handleVideoEnded = async () => {
+    handleDeleteVideo(playlist[0]._id);
+  };
+
   useEffect(() => {
     playlist.length < VIDEO_FETCH_COUNT && fetchPlaylist();
-  }, [addedVideos.length]);
+  }, [addedVideos]);
 
   return (
     <div className="playlist-container">
@@ -63,12 +68,13 @@ export const PlaylistContainer = () => {
         isLoading={isLoading}
         videos={playlist}
         onVideoAdded={handleAddVideo}
+        onVideoDeleted={handleDeleteVideo}
         hasMoreToLoad={hasMoreToLoad}
         loadMore={fetchPlaylist}
         setVideoMuted={setIsMuted}
       />
 
-      <VideoPlayer isVideoMuted={isCurrentVideoMuted} playingVideo={playlist[0]} onVideoEnded={handleVideoEnded} />
+      <VideoPlayer uri={playingVideoUri} isVideoMuted={isCurrentVideoMuted} onVideoEnded={handleVideoEnded} />
     </div>
   );
 };

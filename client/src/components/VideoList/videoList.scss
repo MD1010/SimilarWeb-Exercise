@@ -12,17 +12,29 @@
   border: 1px solid;
   padding: 5px;
   border-radius: 5px;
+  &__controls {
+    display: flex;
+    align-items: center;
+  }
+  &__delete {
+    cursor: pointer;
+    margin-right: 10px;
+  }
+  &__duration {
+    font-weight: bold;
+    margin-left: 10px;
+  }
 }
 .add-video-form {
   display: flex;
   justify-content: space-between;
-  & .text {
+  &__text {
     flex: 5;
     padding: 5px;
     margin-right: 5px;
   }
 
-  & .submit-btn {
+  &__submit-btn {
     padding: 3px;
   }
 }

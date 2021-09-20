@@ -1,24 +1,17 @@
 import React from "react";
 import ReactPlayer from "react-player";
-import { IVideo } from "../../interfaces/Video";
 import "./player.scss";
 
 interface VideoPlayerProps {
-  playingVideo: IVideo | undefined;
+  uri: string;
   onVideoEnded: () => void;
   isVideoMuted: boolean;
 }
 
-export const VideoPlayer: React.FC<VideoPlayerProps> = ({ playingVideo, onVideoEnded, isVideoMuted }) => {
+export const VideoPlayer: React.FC<VideoPlayerProps> = ({ uri, onVideoEnded, isVideoMuted }) => {
   return (
     <div className="player-wrapper">
-      <ReactPlayer
-        className="player"
-        onEnded={onVideoEnded}
-        playing
-        muted={isVideoMuted}
-        url={`https://www.youtube.com/watch?v=${playingVideo?.videoId}&showinfo=0`} //Todo move to variable
-      />
+      <ReactPlayer className="player" onEnded={onVideoEnded} playing muted={isVideoMuted} url={uri} />
     </div>
   );
 };
