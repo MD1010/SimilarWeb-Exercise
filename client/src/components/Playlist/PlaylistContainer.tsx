@@ -57,6 +57,10 @@ export const PlaylistContainer = () => {
   };
 
   useEffect(() => {
+    // if we add the video to the list when we have less than VIDEO_FETCH_COUNT (less than a page) we would
+    // want to see the added video appears in the list right away, however we must fetch to see if other user
+    // has added new videos meanwhile in order to preserve the playing order, as if we whould have added the video to the buttom
+    // we would play it before videos that were supposed to be added earlier and havent been fetched before
     playlist.length < VIDEO_FETCH_COUNT && fetchPlaylist();
   }, [addedVideos]);
 

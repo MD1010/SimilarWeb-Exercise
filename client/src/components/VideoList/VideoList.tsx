@@ -41,6 +41,21 @@ export const VideoList: React.FC<VideoListProps> = memo(
       onVideoAdded(videoId);
     };
 
+    const VideoItem = ({ videoItem, index }: { videoItem: IVideo; index: number }) => {
+      const { title, duration, _id } = videoItem;
+      return (
+        <div className="video-item">
+          <span>{title}</span>
+          <div className="video-item__controls">
+            <span className="video-item__delete" onClick={() => onVideoDeleted(_id)}>
+              <FiTrash size={22} />
+            </span>
+            {!index && <MuteButton isMuted={isCurrentVideoMuted} setIsMuted={setVideoMuted} />}
+            <span className="video-item__duration">{duration}</span>
+          </div>
+        </div>
+      );
+    };
     return (
       <>
         <div className="video-list">
@@ -55,19 +70,9 @@ export const VideoList: React.FC<VideoListProps> = memo(
             }}
           >
             {videos.map((videoItem, index) => {
-              const { duration, title } = videoItem;
               return (
                 <Draggable key={videoItem._id}>
-                  <div className="video-item">
-                    <span>{title}</span>
-                    <div className="video-item__controls">
-                      <span className="video-item__delete" onClick={() => onVideoDeleted(videoItem._id)}>
-                        <FiTrash size={22} />
-                      </span>
-                      {!index && <MuteButton isMuted={isCurrentVideoMuted} setIsMuted={setVideoMuted} />}
-                      <span className="video-item__duration">{duration}</span>
-                    </div>
-                  </div>
+                  <VideoItem videoItem={videoItem} index={index} />
                 </Draggable>
               );
             })}

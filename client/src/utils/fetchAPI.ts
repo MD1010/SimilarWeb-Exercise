@@ -1,10 +1,10 @@
 import axios, { AxiosError } from "axios";
+import { METHOD_DOES_NOT_EXIST } from "./consts";
 
 export enum RequestMethod {
   GET = "GET",
   POST = "POST",
   DELETE = "DELETE",
-  PUT = "PUT",
 }
 
 export const fetchAPI = async <T = any>(
@@ -45,6 +45,6 @@ export const fetchAPI = async <T = any>(
     }
 
     default:
-      throw "Method specified doesn't exist"; //TODO move it to an error const.
+      throw METHOD_DOES_NOT_EXIST;
   }
 };
