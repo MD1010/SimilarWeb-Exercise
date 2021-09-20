@@ -1,7 +1,7 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
 import { FailedCrudMessage } from "../interfaces/failed-crud-message.interface";
 import { IReadEntity, IWriteEntity, SortOrder } from "../interfaces/generic-crud.interface";
-import { CreateFailedException, DeleteFailedException, EntityExistsException } from "../utils";
+import { CreateFailedException, EntityExistsException } from "../utils";
 import { toObjectId } from "../utils/base-id";
 
 export class DbEnity<T extends Document> implements IReadEntity<T>, IWriteEntity<T> {
