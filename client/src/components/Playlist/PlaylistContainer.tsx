@@ -78,7 +78,9 @@ export const PlaylistContainer = () => {
         setVideoMuted={setIsMuted}
       />
 
-      <VideoPlayer uri={playingVideoUri} isVideoMuted={isCurrentVideoMuted} onVideoEnded={handleVideoEnded} />
+      {playingVideoUri && (
+        <VideoPlayer uri={playingVideoUri} isVideoMuted={isCurrentVideoMuted} onVideoEnded={handleVideoEnded} />
+      )}
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import React, { memo, useState } from "react";
-import { Container, Draggable } from "react-smooth-dnd";
+import { Container as DragAndDropContainer, Draggable } from "react-smooth-dnd";
 import { IVideo } from "../../interfaces/Video";
 import { swapElements } from "../../utils/helpers";
 import { MuteButton } from "../shared/Mute";
@@ -63,7 +63,7 @@ export const VideoList: React.FC<VideoListProps> = memo(
             <input className="add-video-form__text" type="text" value={videoId} onChange={handleVideoIdChange}></input>
             <input className="add-video-form__submit-btn" type="submit" disabled={!videoId.length}></input>
           </form>
-          <Container
+          <DragAndDropContainer
             onDrop={({ addedIndex, removedIndex }) => {
               // this check is to prevent modifing the currently playing song
               addedIndex && removedIndex && setVideos([...swapElements(videos, addedIndex, removedIndex)]);
@@ -76,7 +76,7 @@ export const VideoList: React.FC<VideoListProps> = memo(
                 </Draggable>
               );
             })}
-          </Container>
+          </DragAndDropContainer>
           {!isLoading && hasMoreToLoad && <button onClick={loadMore}>Load More</button>}
           {!videos.length && <h1>Playlist is Empty</h1>}
         </div>

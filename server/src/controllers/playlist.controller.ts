@@ -26,7 +26,9 @@ export class PlaylistController extends GenericCrudController<Video> {
     const duration = formatDuration(response.data?.items?.[0]?.contentDetails.duration);
 
     if (!title || !duration) throw new CreateFailedException(PlaylistErrorMessages.InvalidVideoId, 400);
+
     const newVideoCreated = await this.dbEntity.create({ videoId, title, duration } as any, "videoId");
+
     return res.status(201).json({ created: newVideoCreated });
   });
 }
