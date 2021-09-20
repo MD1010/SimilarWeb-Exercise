@@ -61,7 +61,7 @@ export const VideoList: React.FC<VideoListProps> = memo(
         <div className="video-list">
           <form onSubmit={handleSubmit} className="add-video-form">
             <input className="add-video-form__text" type="text" value={videoId} onChange={handleVideoIdChange}></input>
-            <input className="add-video-form__submit-btn" type="submit"></input>
+            <input className="add-video-form__submit-btn" type="submit" disabled={!videoId.length}></input>
           </form>
           <Container
             onDrop={({ addedIndex, removedIndex }) => {
